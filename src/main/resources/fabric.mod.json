@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "%s",
+  "id": "landscaped",
   "version": "${version}",
 
   "name": "Example Mod",
@@ -14,12 +14,12 @@
   },
 
   "license": "CC0-1.0",
-  "icon": "assets/%s/icon.png",
+  "icon": "assets/landscaped/icon.png",
 
   "environment": "*",
   "entrypoints": {
     "stationapi:event_bus": [
-      "%s.events.init.InitListener"
+      "net.glasslauncher.mods.landscaped.events.init.InitListener"
     ],
     "stationapi:event_bus_client": [
     ],
@@ -27,7 +27,7 @@
     ]
   },
   "mixins": [
-    "%s.mixins.json"
+    "landscaped.mixins.json"
   ],
 
   "depends": {
