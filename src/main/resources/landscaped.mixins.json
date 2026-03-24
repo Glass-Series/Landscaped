@@ -4,11 +4,23 @@
   "package": "net.glasslauncher.mods.landscaped.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "ExampleMixin"
+    "BiomeMixin",
+    "BiomeSourceMixin",
+    "CustomBiomesMixin",
+    "ExplodeVanillaTreesMixin",
+    "Overworld",
+    "OverworldChunkGeneratorMixin",
+    "OverworldGenMixin",
+    "WorldDecoratorImplMixin",
+    "WorldMixin",
+    "stationapi.FlattenedChunkMixin",
+    "stationapi.FlattenedWorldManagerMixin"
   ],
   "server": [
+    "server.MinecraftServerMixin"
   ],
   "client": [
+    "client.MinecraftMixin"
   ],
   "injectors": {
     "defaultRequire": 1

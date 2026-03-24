@@ -19,7 +19,7 @@ version = project.properties["mod_version"] as String
 group = project.properties["maven_group"] as String
 
 loom {
-//	accessWidenerPath = file("src/main/resources/landscaped.accesswidener")
+	accessWidenerPath = file("src/main/resources/landscaped.classtweaker")
 
 	runs {
 		// If you want to make a testmod for your mod, right click on src, and create a new folder with the same name as source() below.
@@ -43,6 +43,7 @@ repositories {
 	maven("https://maven.glass-launcher.net/babric")
 	maven("https://maven.minecraftforge.net/")
 	maven("https://jitpack.io/")
+	maven("https://maven.bawnorton.com/releases")
 	mavenCentral()
 	exclusiveContent {
 		forRepository {
@@ -75,9 +76,9 @@ dependencies {
 
 	// StAPI itself.
 	// transitiveImplementation tells babric loom that you want this dependency to be pulled into other mod's development workspaces. Best used ONLY for required dependencies.
-	transitiveImplementation(modImplementation("net.modificationstation:StationAPI:${project.properties["stationapi_version"]}") as Dependency)
+	modImplementation("net.modificationstation:StationAPI:${project.properties["stationapi_version"]}")
 
-	transitiveImplementation(modImplementation("net.glasslauncher.mods:Forested:1.0.0-alpha.1") as Dependency)
+	modImplementation("net.glasslauncher.mods:Forested:1.0.0-alpha.4")
 
 	// Extra mods.
 	// https://github.com/calmilamsy/glass-config-api

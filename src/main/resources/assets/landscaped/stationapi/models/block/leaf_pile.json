@@ -1,0 +1,17 @@
+{
+	"parent": "minecraft:block/block",
+	"textures": {
+		"0": "landscaped:block/leaf_pile",
+		"particle": "landscaped:block/leaf_pile"
+	},
+	"elements": [
+		{
+			"from": [0, 0.1, 0],
+			"to": [16, 0.1, 16],
+			"faces": {
+				"up": {"uv": [16, 16, 0, 0], "texture": "#0"},
+				"down": {"uv": [16, 0, 0, 16], "texture": "#0"}
+			}
+		}
+	]
+}

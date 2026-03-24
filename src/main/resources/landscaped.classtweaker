@@ -1,0 +1,15 @@
+classTweaker v1 named
+
+accessible field net/minecraft/util/math/noise/OctaveSimplexNoiseSampler octaves I
+accessible field net/minecraft/util/math/noise/OctaveSimplexNoiseSampler octaveSamplers [Lnet/minecraft/util/math/noise/SimplexNoiseSampler;
+accessible field net/minecraft/world/gen/carver/Carver random Ljava/util/Random;
+accessible method net/minecraft/world/gen/carver/CaveCarver carveTunnels (II[BDDDFFFIID)V
+accessible field net/minecraft/world/biome/Biome BIOMES [Lnet/minecraft/world/biome/Biome;
+transitive-inject-interface net/minecraft/world/biome/Biome net/glasslauncher/mods/landscaped/LandscapedBiome
+transitive-inject-interface net/minecraft/world/chunk/Chunk net/glasslauncher/mods/landscaped/LandscapedChunk
+accessible field net/minecraft/world/biome/source/BiomeSource weirdnessSampler Lnet/minecraft/util/math/noise/OctaveSimplexNoiseSampler;
+accessible field net/minecraft/world/biome/source/BiomeSource downfallSampler Lnet/minecraft/util/math/noise/OctaveSimplexNoiseSampler;
+accessible field net/minecraft/world/biome/source/BiomeSource temperatureSampler Lnet/minecraft/util/math/noise/OctaveSimplexNoiseSampler;
+accessible field net/minecraft/client/Minecraft INSTANCE Lnet/minecraft/client/Minecraft;
+accessible method net/minecraft/world/biome/Biome <init> ()V
+accessible field net/minecraft/world/gen/chunk/OverworldChunkGenerator biomes [Lnet/minecraft/world/biome/Biome;
