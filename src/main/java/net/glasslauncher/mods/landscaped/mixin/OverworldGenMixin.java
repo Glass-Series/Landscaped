@@ -4,6 +4,8 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.glasslauncher.mods.landscaped.GlassCaveCarver;
+import net.glasslauncher.mods.landscaped.LandscapedCompatibleBiome;
+import net.glasslauncher.mods.landscaped.LandscapedCompatibleDimension;
 import net.glasslauncher.mods.landscaped.events.init.LandscapedBlockInit;
 import net.minecraft.block.material.Material;
 import net.minecraft.world.World;
@@ -31,12 +33,19 @@ public class OverworldGenMixin {
 
     @Inject(method = "<init>", at = @At(value = "RETURN"))
     private void hijack(World seed, long par2, CallbackInfo ci) {
+        if (!(world.dimension instanceof LandscapedCompatibleDimension)) {
+            return;
+        }
         cave = new GlassCaveCarver();
         ((CaveGenBaseImpl) cave).stationapi_setWorld(world);
     }
 
     @WrapOperation(method = "decorate", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/gen/feature/Feature;generate(Lnet/minecraft/world/World;Ljava/util/Random;III)Z"))
     private boolean test(Feature instance, World world, Random random, int x, int y, int z, Operation<Boolean> original, @Local Biome biome) {
+        if (!(world.dimension instanceof LandscapedCompatibleDimension)) {
+            return original.call(instance, world, random, x, y, z);
+        }
+
         boolean didGen = original.call(instance, world, random, x, y, z);
         int radius = 6;
         if (didGen && biome.canRain()) {

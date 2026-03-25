@@ -6,9 +6,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.glasslauncher.mods.landscaped.LandscapedBiome;
-import net.glasslauncher.mods.landscaped.LandscapedBiomeRegistry;
-import net.glasslauncher.mods.landscaped.LandscapedWorld;
+import net.glasslauncher.mods.landscaped.*;
 import net.minecraft.world.LightType;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
@@ -16,7 +14,9 @@ import net.minecraft.world.chunk.light.LightUpdate;
 import net.minecraft.world.dimension.Dimension;
 import net.minecraft.world.storage.WorldStorage;
 import net.modificationstation.stationapi.api.util.Identifier;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -30,6 +30,7 @@ import java.util.*;
 
 @Mixin(World.class)
 public class WorldMixin implements LandscapedWorld {
+    @Shadow @Final public Dimension dimension;
     @Unique
     Identifier[] biomeIndexToID;
     @Unique
@@ -54,6 +55,9 @@ public class WorldMixin implements LandscapedWorld {
 
     @Unique
     private void initBiomeMap(WorldStorage worldStorage) {
+        if (!(dimension instanceof LandscapedCompatibleDimension)) {
+            return;
+        }
         File propsFile = worldStorage.getWorldPropertiesFile("landscapedbiomes");
         if (propsFile.exists()) {
             try {

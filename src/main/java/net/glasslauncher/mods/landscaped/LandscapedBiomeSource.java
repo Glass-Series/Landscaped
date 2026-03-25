@@ -65,4 +65,6 @@ public interface LandscapedBiomeSource {
     }
 
     OctavePerlinNoiseSampler landscaped$getVoronoiSmootherSampler();
+    World landscaped$getWorld();
+    void landscaped$setWorld(World world);
 }

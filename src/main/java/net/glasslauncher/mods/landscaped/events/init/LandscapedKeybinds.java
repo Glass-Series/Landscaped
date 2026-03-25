@@ -15,7 +15,7 @@ public class LandscapedKeybinds {
 
     @EventListener
     public static void keypress(KeyStateChangedEvent event) {
-        if (Minecraft.INSTANCE.world != null && Keyboard.getEventKey() == EXPORT_WORLD.code && Keyboard.getEventKeyState()) {
+        if (Minecraft.INSTANCE.world != null && Minecraft.INSTANCE.currentScreen == null && Keyboard.getEventKey() == EXPORT_WORLD.code && Keyboard.getEventKeyState()) {
             Landscaped.LOGGER.info("Exporting world biomes...");
             BiomeVisualiser.exportWorld(Minecraft.INSTANCE.world);
         }
