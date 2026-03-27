@@ -57,7 +57,7 @@ public interface LandscapedBiomeSource {
 
         for (int posX = 0; posX < sizeX; posX++) {
             for (int posZ = 0; posZ < sizeZ; posZ++) {
-                biomes[posX * posZ + posZ] = getBiomeAt(startX + posX, startZ + posZ, world);
+                biomes[(posX * sizeZ) + posZ] = getBiomeAt(startX + posX, startZ + posZ, world);
             }
         }
 
