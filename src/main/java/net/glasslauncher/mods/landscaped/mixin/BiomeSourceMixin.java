@@ -1,7 +1,11 @@
 package net.glasslauncher.mods.landscaped.mixin;
 
+import com.github.benmanes.caffeine.cache.Cache;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import it.unimi.dsi.fastutil.ints.Int2DoubleOpenHashMap;
+import it.unimi.dsi.fastutil.ints.Int2IntArrayMap;
+import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import net.glasslauncher.mods.landscaped.LandscapedBiomeSource;
 import net.glasslauncher.mods.landscaped.LandscapedCompatibleBiome;
 import net.glasslauncher.mods.landscaped.LandscapedCompatibleDimension;
@@ -20,6 +24,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.Objects;
 import java.util.Random;
 
 @Mixin(BiomeSource.class)
@@ -32,6 +37,23 @@ public class BiomeSourceMixin implements LandscapedBiomeSource {
     @Inject(method = "<init>(Lnet/minecraft/world/World;)V", at = @At(value = "NEW", target = "(Ljava/util/Random;I)Lnet/minecraft/util/math/noise/OctaveSimplexNoiseSampler;", ordinal = 0, shift = At.Shift.BEFORE))
     private void init(World par1, CallbackInfo ci) {
         world = par1;
+        voronoiSmootherSampler = new OctavePerlinNoiseSampler(new Random(world.getSeed()), 4) {
+            private final Int2DoubleOpenHashMap CACHE = new Int2DoubleOpenHashMap();
+            {
+                CACHE.defaultReturnValue(Double.MIN_VALUE);
+            }
+
+            @Override
+            public double sample(double x, double y) {
+
+                int key = Objects.hash(x, y);
+                double value = CACHE.get(key);
+                if (value == Double.MIN_VALUE) {
+                    CACHE.put(key, value = super.sample(x, y));
+                }
+                return value;
+            }
+        };
     }
 
     @WrapOperation(method = "<init>(Lnet/minecraft/world/World;)V", at = @At(value = "NEW", target = "(Ljava/util/Random;I)Lnet/minecraft/util/math/noise/OctaveSimplexNoiseSampler;"))
