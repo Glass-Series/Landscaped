@@ -31,6 +31,7 @@ import java.util.*;
 @Mixin(World.class)
 public class WorldMixin implements LandscapedWorld {
     @Shadow @Final public Dimension dimension;
+    @Shadow public boolean isRemote;
     @Unique
     Identifier[] biomeIndexToID;
     @Unique
@@ -55,8 +56,8 @@ public class WorldMixin implements LandscapedWorld {
 
     @Unique
     private void initBiomeMap(WorldStorage worldStorage) {
-        if (!(dimension instanceof LandscapedCompatibleDimension)) {
-            return;
+        if (isRemote) {
+            return; // Server world, we let the server tell us what exists here.
         }
         File propsFile = worldStorage.getWorldPropertiesFile("landscapedbiomes");
         if (propsFile.exists()) {

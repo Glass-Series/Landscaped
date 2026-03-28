@@ -31,33 +31,21 @@ public class OverworldChunkGeneratorMixin {
 
     @WrapOperation(method = "<init>", at = @At(value = "NEW", target = "(Ljava/util/Random;I)Lnet/minecraft/util/math/noise/OctavePerlinNoiseSampler;"))
     private OctavePerlinNoiseSampler scaleBiomes(Random random, int oct, Operation<OctavePerlinNoiseSampler> original) {
-        if (!(world.dimension instanceof LandscapedCompatibleDimension)) {
-            return original.call(random, oct);
-        }
         return new ScaledOctavePerlinSampler(random, oct, LandscapedConfig.INSTANCE.biomeScale.scale);
     }
 
     @Inject(method = "getChunk", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;method_1781()Lnet/minecraft/world/biome/source/BiomeSource;", ordinal = 1, shift = At.Shift.BEFORE))
     private void test(int chunkX, int chunkZ, CallbackInfoReturnable<Chunk> cir, @Local Chunk chunk) {
-        if (!(world.dimension instanceof LandscapedCompatibleDimension)) {
-            return;
-        }
         ((LandscapedChunk) chunk).landscaped$setBiomes(Arrays.copyOf(biomes, 256));
     }
 
     @Inject(method = "buildSurfaces", at = @At(value = "INVOKE", target = "Ljava/util/Random;nextDouble()D", ordinal = 0, shift = At.Shift.BEFORE))
     private void test(int chunkX, int chunkZ, byte[] blocks, Biome[] biomes, CallbackInfo ci, @Local(index = 8) int inChunkX, @Local(index = 9) int inChunkZ, @Local LocalRef<Biome> biome) {
-        if (!(world.dimension instanceof LandscapedCompatibleDimension)) {
-            return;
-        }
         biome.set(((LandscapedBiomeSource) world.method_1781()).getBiomeAt((chunkX * 16) + inChunkZ, (chunkZ * 16) + inChunkX, world));
     }
 
     @WrapOperation(method = "decorate", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/biome/source/BiomeSource;getBiome(II)Lnet/minecraft/world/biome/Biome;"))
     private Biome test2(BiomeSource instance, int x, int z, Operation<Biome> original) {
-        if (!(world.dimension instanceof LandscapedCompatibleDimension)) {
-            return original.call(instance, x, z);
-        }
         return ((LandscapedBiomeSource) instance).getBiomeAt(x, z, world);
     }
 }
