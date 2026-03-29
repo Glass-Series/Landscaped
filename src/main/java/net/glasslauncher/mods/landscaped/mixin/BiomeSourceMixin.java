@@ -63,7 +63,7 @@ public class BiomeSourceMixin implements LandscapedBiomeSource {
 
     @Inject(method = "getBiomesInArea([Lnet/minecraft/world/biome/Biome;IIII)[Lnet/minecraft/world/biome/Biome;", at = @At(value = "HEAD"), cancellable = true)
     private void test(Biome[] biomes, int x, int z, int width, int depth, CallbackInfoReturnable<Biome[]> cir) {
-        cir.setReturnValue(getBiomesForArea(x, z, width, depth, world));
+        cir.setReturnValue(getBiomesForArea(x, z, width, depth, world, true));
     }
 
     @Override

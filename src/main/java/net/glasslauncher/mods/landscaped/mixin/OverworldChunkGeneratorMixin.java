@@ -41,11 +41,11 @@ public class OverworldChunkGeneratorMixin {
 
     @Inject(method = "buildSurfaces", at = @At(value = "INVOKE", target = "Ljava/util/Random;nextDouble()D", ordinal = 0, shift = At.Shift.BEFORE))
     private void test(int chunkX, int chunkZ, byte[] blocks, Biome[] biomes, CallbackInfo ci, @Local(index = 8) int inChunkX, @Local(index = 9) int inChunkZ, @Local LocalRef<Biome> biome) {
-        biome.set(((LandscapedBiomeSource) world.method_1781()).getBiomeAt((chunkX * 16) + inChunkZ, (chunkZ * 16) + inChunkX, world));
+        biome.set(((LandscapedBiomeSource) world.method_1781()).getBiomeAt((chunkX * 16) + inChunkZ, (chunkZ * 16) + inChunkX, world, null));
     }
 
     @WrapOperation(method = "decorate", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/biome/source/BiomeSource;getBiome(II)Lnet/minecraft/world/biome/Biome;"))
     private Biome test2(BiomeSource instance, int x, int z, Operation<Biome> original) {
-        return ((LandscapedBiomeSource) instance).getBiomeAt(x, z, world);
+        return ((LandscapedBiomeSource) instance).getBiomeAt(x, z, world, world.getChunkFromPos(x, z));
     }
 }

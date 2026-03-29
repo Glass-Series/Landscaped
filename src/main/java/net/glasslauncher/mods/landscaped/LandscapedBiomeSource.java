@@ -4,6 +4,7 @@ import net.minecraft.util.math.noise.OctavePerlinNoiseSampler;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.FixedBiomeSource;
+import net.minecraft.world.chunk.Chunk;
 
 import static net.glasslauncher.mods.landscaped.BiomeCellData.CELL_SIZE;
 
@@ -12,10 +13,18 @@ public interface LandscapedBiomeSource {
     double WARP_AMP  = 32.0;   // max blocks to warp
 
 
-    default Biome getBiomeAt(int worldX, int worldZ, World world) {
+    default Biome getBiomeAt(int worldX, int worldZ, World world, Chunk chunk) {
         if (this instanceof FixedBiomeSource fixedBiomeSource) {
             return fixedBiomeSource.getBiome(0, 0);
         }
+
+        if (chunk != null && chunk.terrainPopulated) {
+            Biome[] biomes = ((LandscapedChunk) chunk).landscaped$getBiomes();
+            if (biomes != null && biomes.length == 256) {
+                return biomes[((Math.abs(worldX) % 16) << 4) + (Math.abs(worldX) % 16)];
+            }
+        }
+
         int cellX = Math.floorDiv(worldX, CELL_SIZE);
         int cellZ = Math.floorDiv(worldZ, CELL_SIZE);
 
@@ -49,15 +58,17 @@ public interface LandscapedBiomeSource {
         return bestBiome;
     }
 
-    default Biome[] getBiomesForArea(int startX, int startZ, int sizeX, int sizeZ, World world) {
+    default Biome[] getBiomesForArea(int startX, int startZ, int sizeX, int sizeZ, World world, boolean generating) {
         Biome[] biomes = new Biome[sizeX * sizeZ];
 
         world.method_1781().temperatureMap = new double[sizeX * sizeZ];
         world.method_1781().downfallMap = new double[sizeX * sizeZ];
 
         for (int posX = 0; posX < sizeX; posX++) {
+            int cx = Math.abs(posX) >> 4;
             for (int posZ = 0; posZ < sizeZ; posZ++) {
-                biomes[(posX * sizeZ) + posZ] = getBiomeAt(startX + posX, startZ + posZ, world);
+                int cz = Math.abs(posZ) >> 4;
+                biomes[(posX * sizeZ) + posZ] = getBiomeAt(startX + posX, startZ + posZ, world, generating ? null : world.getChunkFromPos(posX, posZ));
             }
         }
 
