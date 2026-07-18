@@ -6,17 +6,17 @@ import java.net.URL
 
 plugins {
 	id("maven-publish")
-	id("fabric-loom") version "1.13.3"
-	id("babric-loom-extension") version "1.13.3"
+	id("fabric-loom") version "1.17.12"
+	id("babric-loom-extension") version "1.16.1"
 }
 
 //noinspection GroovyUnusedAssignment
 java.sourceCompatibility = JavaVersion.VERSION_17
 java.targetCompatibility = JavaVersion.VERSION_17
 
-base.archivesName = project.properties["archives_base_name"] as String
-version = project.properties["mod_version"] as String
-group = project.properties["maven_group"] as String
+base.archivesName = providers.gradleProperty("archives_base_name").get()
+version = providers.gradleProperty("mod_version").get()
+group = providers.gradleProperty("maven_group").get()
 
 loom {
 	accessWidenerPath = file("src/main/resources/landscaped.classtweaker")
@@ -57,8 +57,8 @@ repositories {
 
 dependencies {
 	minecraft("com.mojang:minecraft:b1.7.3")
-	mappings("net.glasslauncher:biny:${project.properties["yarn_mappings"]}:v2")
-	modImplementation("net.fabricmc:fabric-loader:${project.properties["loader_version"]}")
+	mappings("net.glasslauncher:biny:${providers.gradleProperty("yarn_mappings").get()}:v2")
+	modImplementation("net.fabricmc:fabric-loader:${providers.gradleProperty("loader_version").get()}")
 
 	implementation("org.apache.logging.log4j:log4j-core:2.17.2")
 
@@ -76,17 +76,17 @@ dependencies {
 
 	// StAPI itself.
 	// transitiveImplementation tells babric loom that you want this dependency to be pulled into other mod's development workspaces. Best used ONLY for required dependencies.
-	modImplementation("net.modificationstation:StationAPI:${project.properties["stationapi_version"]}")
+	modImplementation("net.modificationstation:StationAPI:${providers.gradleProperty("stationapi_version").get()}")
 
-	modImplementation("net.glasslauncher.mods:Forested:1.0.0-alpha.4")
+	modImplementation("net.glasslauncher.mods:Forested:1.0.0-alpha.6")
 
 	// Extra mods.
 	// https://github.com/calmilamsy/glass-config-api
-	modImplementation("net.glasslauncher.mods:GlassConfigAPI:${project.properties["gcapi_version"]}")
+	modImplementation("net.glasslauncher.mods:GlassConfigAPI:${providers.gradleProperty("gcapi_version").get()}")
 	// https://github.com/calmilamsy/modmenu
-	modImplementation("net.danygames2014:modmenu:${project.properties["modmenu_version"]}")
+	modImplementation("net.danygames2014:modmenu:${providers.gradleProperty("modmenu_version").get()}")
 	// https://github.com/Glass-Series/Always-More-Items
-	modImplementation("net.glasslauncher.mods:AlwaysMoreItems:${project.properties["alwaysmoreitems_version"]}")
+	modImplementation("net.glasslauncher.mods:AlwaysMoreItems:${providers.gradleProperty("alwaysmoreitems_version").get()}")
 }
 
 configurations.all {
@@ -94,10 +94,10 @@ configurations.all {
 }
 
 tasks.withType<ProcessResources> {
-	inputs.property("version", project.properties["version"])
+	inputs.property("version", project.version)
 
 	filesMatching("fabric.mod.json") {
-		expand(mapOf("version" to project.properties["version"]))
+		expand(mapOf("version" to project.version))
 	}
 }
 
@@ -117,8 +117,14 @@ java {
 
 tasks.withType<Jar> {
 	from("LICENSE") {
-		rename { "${it}_${project.properties["archivesBaseName"]}" }
+		rename { "${it}_${providers.gradleProperty("archivesBaseName").get()}" }
 	}
+}
+
+// Tells gradle to not generate module files for maven.
+// They aren't standard and the documentation is abysmal. Stop it.
+tasks.withType<GenerateModuleMetadata> {
+	enabled = false
 }
 
 publishing {
@@ -128,8 +134,8 @@ publishing {
 			maven {
 				url = URI("https://maven.example.com")
 				credentials {
-					username = "${project.properties["my_maven_username"]}"
-					password = "${project.properties["my_maven_password"]}"
+					username = providers.gradleProperty("my_maven_username").get()
+					password = providers.gradleProperty("my_maven_password").get()
 				}
 			}
 		}
@@ -137,7 +143,7 @@ publishing {
 
 	publications {
 		register("mavenJava", MavenPublication::class) {
-			artifactId = project.properties["archives_base_name"] as String
+			artifactId = providers.gradleProperty("archives_base_name").get()
 			from(components["java"])
 		}
 	}
