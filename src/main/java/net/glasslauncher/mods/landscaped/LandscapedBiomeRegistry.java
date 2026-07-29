@@ -2,6 +2,8 @@ package net.glasslauncher.mods.landscaped;
 
 import com.mojang.serialization.Lifecycle;
 import net.minecraft.world.biome.Biome;
+import net.modificationstation.stationapi.api.event.registry.RegistryAttribute;
+import net.modificationstation.stationapi.api.event.registry.RegistryAttributeHolder;
 import net.modificationstation.stationapi.api.registry.RegistryKey;
 import net.modificationstation.stationapi.api.registry.SimpleRegistry;
 
@@ -11,5 +13,6 @@ public class LandscapedBiomeRegistry extends SimpleRegistry<Biome> {
 
     public LandscapedBiomeRegistry() {
         super(KEY, Lifecycle.stable());
+        RegistryAttributeHolder.get(this).addAttribute(RegistryAttribute.SYNCED);
     }
 }

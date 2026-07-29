@@ -13,13 +13,17 @@
     "OverworldGenMixin",
     "WorldDecoratorImplMixin",
     "WorldMixin",
+    "stationapi.FlattenedChunkDataS2CPacketMixin",
     "stationapi.FlattenedChunkMixin",
+    "stationapi.FlattenedClientPlayNetworkHandlerMixin",
     "stationapi.FlattenedWorldManagerMixin"
   ],
   "server": [
+    "server.DebugMixin",
     "server.MinecraftServerMixin"
   ],
   "client": [
+    "client.ClientWorldMixin",
     "client.MinecraftMixin"
   ],
   "injectors": {

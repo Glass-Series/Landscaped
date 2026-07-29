@@ -20,12 +20,14 @@
   "entrypoints": {
     "stationapi:event_bus": [
       "net.glasslauncher.mods.landscaped.events.init.LandscapedBiomesInit",
-      "net.glasslauncher.mods.landscaped.events.init.LandscapedBlockInit"
+      "net.glasslauncher.mods.landscaped.events.init.LandscapedBlockInit",
+      "net.glasslauncher.mods.landscaped.events.init.LandscapedNetworking"
     ],
     "stationapi:event_bus_client": [
       "net.glasslauncher.mods.landscaped.events.init.LandscapedKeybinds"
     ],
     "stationapi:event_bus_server": [
+      "net.glasslauncher.mods.landscaped.events.ServerSyncEvent"
     ],
     "gcapi3": [
       "net.glasslauncher.mods.landscaped.events.init.LandscapedConfig"

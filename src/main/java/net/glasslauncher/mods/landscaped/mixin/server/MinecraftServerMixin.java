@@ -1,5 +1,6 @@
 package net.glasslauncher.mods.landscaped.mixin.server;
 
+import com.llamalad7.mixinextras.sugar.Local;
 import net.glasslauncher.mods.landscaped.BiomeDistributor;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.ServerWorld;
@@ -15,8 +16,8 @@ public class MinecraftServerMixin {
 
     @Shadow public ServerWorld[] worlds;
 
-    @Inject(method = "loadWorld", at = @At(value = "NEW", target = "(Lnet/minecraft/server/MinecraftServer;Lnet/minecraft/world/storage/WorldStorage;Ljava/lang/String;IJ)Lnet/minecraft/world/ServerWorld;", shift = At.Shift.AFTER))
-    private void inject(WorldStorageSource storageSource, String worldDir, long seed, CallbackInfo ci) {
-        BiomeDistributor.updateDistributor(worlds[0]);
+    @Inject(method = "loadWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/ServerWorld;addEventListener(Lnet/minecraft/world/event/listener/GameEventListener;)V", shift = At.Shift.BEFORE))
+    private void inject(WorldStorageSource storageSource, String worldDir, long seed, CallbackInfo ci, @Local int var6) {
+        BiomeDistributor.updateDistributor(worlds[var6]);
     }
 }

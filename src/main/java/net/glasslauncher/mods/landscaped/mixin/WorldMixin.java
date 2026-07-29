@@ -6,11 +6,11 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.loader.api.FabricLoader;
 import net.glasslauncher.mods.landscaped.*;
-import net.minecraft.world.LightType;
+import net.minecraft.world.ClientWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.chunk.light.LightUpdate;
 import net.minecraft.world.dimension.Dimension;
 import net.minecraft.world.storage.WorldStorage;
 import net.modificationstation.stationapi.api.util.Identifier;
@@ -20,7 +20,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.io.File;
@@ -56,7 +55,8 @@ public class WorldMixin implements LandscapedWorld {
 
     @Unique
     private void initBiomeMap(WorldStorage worldStorage) {
-        if (isRemote) {
+        //noinspection ConstantValue
+        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT && ((Object) this instanceof ClientWorld)) {
             return; // Server world, we let the server tell us what exists here.
         }
         File propsFile = worldStorage.getWorldPropertiesFile("landscapedbiomes");
@@ -77,10 +77,7 @@ public class WorldMixin implements LandscapedWorld {
         for (Biome biome : LandscapedBiomeRegistry.INSTANCE.stream().toList()) {
             biomes.add(((LandscapedBiome) biome).landscaped$getIdentifier());
         }
-        biomeIndexToID = biomes.toArray(new Identifier[0]);
-        for (int i = 0; i < biomeIndexToID.length; i++) {
-            biomeIDToIndex.put(biomeIndexToID[i], i);
-        }
+        landscaped$setBiomeIndexToID(biomes.toArray(new Identifier[0]));
         try (FileWriter writer = new FileWriter(propsFile)) {
             writer.write(new Gson().toJson(biomeIDToIndex.keySet().stream().map(Identifier::toString).toArray()));
             writer.flush();
@@ -92,6 +89,15 @@ public class WorldMixin implements LandscapedWorld {
     @Override
     public Identifier[] landscaped$getBiomeIndexToID() {
         return biomeIndexToID;
+    }
+
+    @Override
+    public void landscaped$setBiomeIndexToID(Identifier[] ids) {
+        biomeIndexToID = ids;
+        biomeIDToIndex.clear();
+        for (int i = 0; i < biomeIndexToID.length; i++) {
+            biomeIDToIndex.put(biomeIndexToID[i], i);
+        }
     }
 
     @Override

@@ -1,6 +1,8 @@
 package net.glasslauncher.mods.landscaped.mixin.client;
 
 import net.glasslauncher.mods.landscaped.BiomeDistributor;
+import net.glasslauncher.mods.landscaped.Landscaped;
+import net.glasslauncher.mods.landscaped.LandscapedWorld;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.world.World;
@@ -15,5 +17,7 @@ public class MinecraftMixin {
     @Inject(method = "setWorld(Lnet/minecraft/world/World;Ljava/lang/String;Lnet/minecraft/entity/player/PlayerEntity;)V", at = @At("HEAD"))
     private void inject(World world, String message, PlayerEntity player, CallbackInfo ci) {
         BiomeDistributor.updateDistributor(world);
+        if (world != null)
+            ((LandscapedWorld) world).landscaped$setBiomeIndexToID(Landscaped.clientBiomeArrayHolder);
     }
 }
